@@ -1,10 +1,11 @@
 package crud.service;
 
 import crud.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     User getUser(Long id);
 

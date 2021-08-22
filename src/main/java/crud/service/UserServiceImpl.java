@@ -2,14 +2,18 @@ package crud.service;
 
 import crud.dao.UserDAO;
 import crud.model.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
-    UserDAO userDAO;
+    private UserDAO userDAO;
 
     public UserServiceImpl(UserDAO userDAO) {
         this.userDAO = userDAO;
@@ -38,5 +42,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void editUser(User user) {
         userDAO.editUser(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userDAO.getUser(username);
     }
 }

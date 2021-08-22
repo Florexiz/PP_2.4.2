@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
+@Transactional
 public class UserDAOImpl implements UserDAO {
 
     @PersistenceContext
@@ -20,24 +21,30 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public User getUser(String email) {
+        return entityManager.createQuery("SELECT u FROM User u WHERE u.email=?1", User.class)
+                .setParameter(1, email)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
     public List<User> getUsers() {
         return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
 
     @Override
-    @Transactional
     public void addUser(User user) {
         entityManager.persist(user);
     }
 
     @Override
-    @Transactional
     public void deleteUser(Long id) {
         entityManager.remove(getUser(id));
     }
 
     @Override
-    @Transactional
     public void editUser(User user) {
         User u = getUser(user.getId());
 

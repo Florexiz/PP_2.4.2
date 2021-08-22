@@ -31,7 +31,7 @@ public class JPAConfig {
         emf.setPackagesToScan("crud.model");
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         Properties prop = new Properties();
-        prop.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        prop.setProperty("hibernate.hbm2ddl.auto", "none");
         emf.setJpaProperties(prop);
         return emf;
     }

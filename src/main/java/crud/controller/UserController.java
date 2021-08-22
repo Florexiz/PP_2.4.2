@@ -1,6 +1,7 @@
 package crud.controller;
 
 import crud.model.User;
+import crud.service.RoleService;
 import crud.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,52 +11,72 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final RoleService roleService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
-        for (int i = 1; i <= 20; i++) {
+        this.roleService = roleService;
+        /*for (int i = 1; i <= 20; i++) {
             userService.addUser(new User(
                     "Name" + i,
                     "Surname" + i,
                     "City" + i,
-                    "email" + i + "@mail.com"
+                    "email" + i + "@mail.com",
+                    "PASSWORD" + i,
+                    roleService.getOrCreateRole("USER")
             ));
         }
+        User admin = new User(
+                "AName",
+                "ASurname",
+                "ACity",
+                "admin@mail.com",
+                "ADMIN",
+                roleService.getOrCreateRole("ADMIN")
+        );
+        admin.addRole(roleService.getOrCreateRole("USER"));
+        userService.addUser(admin);*/
     }
 
-    @GetMapping("/")
-    public String showUsers(Model model) {
+    @GetMapping("/user")
+    public String userPage(Model model) {
+        model.addAttribute("user", userService.getUser(1L));
+        return "userPage";
+    }
+
+    @GetMapping("/admin")
+    public String adminPanel(Model model) {
         model.addAttribute("users", userService.getUsers());
-        return "index";
+        return "admin";
     }
 
-    @GetMapping("/new")
+    @GetMapping("/admin/new")
     public String addUser(Model model) {
         model.addAttribute("user", new User());
         return "addUser";
     }
 
-    @PostMapping("/new")
+    @PostMapping("/admin/new")
     public String saveUser(@ModelAttribute("user") User user) {
         userService.addUser(user);
-        return "redirect:/";
+        return "redirect:/admin";
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/admin/delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
-        return "redirect:/";
+        return "redirect:/admin";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/admin/edit/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", userService.getUser(id));
         return "editUser";
     }
 
-    @PatchMapping("/edit")
+    @PatchMapping("/admin/edit")
     public String patchUser(@ModelAttribute User user) {
         userService.editUser(user);
-        return "redirect:/";
+        return "redirect:/admin";
     }
 }
