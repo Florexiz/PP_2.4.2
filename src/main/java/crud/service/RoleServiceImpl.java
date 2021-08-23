@@ -3,11 +3,13 @@ package crud.service;
 import crud.dao.RoleDAO;
 import crud.model.Role;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class RoleServiceImpl implements RoleService {
 
-    private RoleDAO roleDAO;
+    private final RoleDAO roleDAO;
 
     public RoleServiceImpl (RoleDAO roleDAO) {
         this.roleDAO = roleDAO;

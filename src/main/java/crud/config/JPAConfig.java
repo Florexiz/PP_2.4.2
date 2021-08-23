@@ -32,6 +32,7 @@ public class JPAConfig {
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         Properties prop = new Properties();
         prop.setProperty("hibernate.hbm2ddl.auto", "none");
+        prop.setProperty("hibernate.enable_lazy_load_no_trans", "true");
         emf.setJpaProperties(prop);
         return emf;
     }

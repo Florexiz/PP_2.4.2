@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
 public class UserController {
 
@@ -23,7 +25,7 @@ public class UserController {
                     "City" + i,
                     "email" + i + "@mail.com",
                     "PASSWORD" + i,
-                    roleService.getOrCreateRole("USER")
+                    roleService.getOrCreateRole("ROLE_USER")
             ));
         }
         User admin = new User(
@@ -32,15 +34,20 @@ public class UserController {
                 "ACity",
                 "admin@mail.com",
                 "ADMIN",
-                roleService.getOrCreateRole("ADMIN")
+                roleService.getOrCreateRole("ROLE_ADMIN")
         );
-        admin.addRole(roleService.getOrCreateRole("USER"));
+        admin.addRole(roleService.getOrCreateRole("ROLE_USER"));
         userService.addUser(admin);*/
     }
 
+    @GetMapping("/")
+    public String redirect() {
+        return "redirect:/user";
+    }
+
     @GetMapping("/user")
-    public String userPage(Model model) {
-        model.addAttribute("user", userService.getUser(1L));
+    public String userPage(Principal principal, Model model) {
+        model.addAttribute("user", userService.loadUserByUsername(principal.getName()));
         return "userPage";
     }
 

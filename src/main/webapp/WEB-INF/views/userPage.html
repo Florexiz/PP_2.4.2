@@ -6,20 +6,23 @@
 </head>
 <body>
     <div th:object="${user}" style="text-align: center">
-        <label for="id">ID</label><br>
-        <input type="text" id="id" th:field="*{id}" readonly><br><br>
 
         <label for="name">Name</label><br>
-        <input type="text" id="name" th:field="*{name}"><br><br>
+        <input type="text" id="name" th:field="*{name}" readonly><br><br>
 
         <label for="surname">Surname</label><br>
-        <input type="text" id="surname" th:field="*{surname}"><br><br>
+        <input type="text" id="surname" th:field="*{surname}" readonly><br><br>
 
         <label for="city">City</label><br>
-        <input type="text" id="city" th:field="*{city}"><br><br>
+        <input type="text" id="city" th:field="*{city}" readonly><br><br>
 
         <label for="email">Email</label><br>
-        <input type="email" id="email" th:field="*{email}"><br><br>
+        <input type="email" id="email" th:field="*{email}" readonly><br><br>
+
+    </div>
+
+    <div style="text-align: end; margin: 16px">
+        <a href="/logout">Logout</a>
     </div>
 </body>
 </html>
