@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -15,10 +16,12 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserDAO userDAO, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userDAO = userDAO;
+        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -39,6 +42,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void addUser(User user, String[] roles) {
+        user.setRoles(new HashSet<>());
+        for (String role : roles) {
+            user.addRole(roleService.getOrCreateRole(role));
+        }
+        addUser(user);
+    }
+
+    @Override
     public void deleteUser(Long id) {
         userDAO.deleteUser(id);
     }
@@ -52,6 +64,15 @@ public class UserServiceImpl implements UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         userDAO.editUser(user);
+    }
+
+    @Override
+    public void editUser(User user, String[] roles) {
+        user.setRoles(new HashSet<>());
+        for (String role : roles) {
+            user.addRole(roleService.getOrCreateRole(role));
+        }
+        editUser(user);
     }
 
     @Override

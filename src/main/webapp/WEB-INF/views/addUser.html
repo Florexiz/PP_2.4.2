@@ -21,8 +21,10 @@
         <label for="password">Password</label><br>
         <input type="password" id="password" th:field="*{password}"><br><br>
 
-        <input type="checkbox" id="isAdmin" th:name="admin" th:checked="${admin}">
-        <label for="isAdmin">Admin</label><br><br>
+        <label for="roles">Roles</label><br>
+        <select name="roles" id="roles" multiple>
+            <option th:each="role : ${roles}" th:text="${role.name}" th:value="${role.name}"></option>
+        </select><br><br>
 
         <input type="submit" value="Add">
     </form>

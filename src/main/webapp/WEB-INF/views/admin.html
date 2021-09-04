@@ -26,7 +26,7 @@
                 <td th:text="${user.surname}"></td>
                 <td th:text="${user.city}"></td>
                 <td th:text="${user.email}"></td>
-                <td th:text="${user.getAuthorities()}"></td>
+                <td th:text="${user.roles}"></td>
                 <td style="width: min-content">
                     <form th:method="GET" th:action="@{/admin/edit/{id}(id=${user.id})}">
                         <input type="submit" value="Edit">
