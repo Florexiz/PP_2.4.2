@@ -22,8 +22,8 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User getUser(String email) {
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.email=?1", User.class)
-                .setParameter(1, email)
+        return entityManager.createQuery("FROM User u WHERE u.email=:email", User.class)
+                .setParameter("email", email)
                 .getResultStream()
                 .findFirst()
                 .orElse(null);
@@ -31,7 +31,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<User> getUsers() {
-        return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+        return entityManager.createQuery("FROM User", User.class).getResultList();
     }
 
     @Override
@@ -46,11 +46,6 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public void editUser(User user) {
-        User u = getUser(user.getId());
-
-        u.setName(user.getName());
-        u.setSurname(user.getSurname());
-        u.setCity(user.getCity());
-        u.setEmail(user.getEmail());
+        entityManager.merge(user);
     }
 }

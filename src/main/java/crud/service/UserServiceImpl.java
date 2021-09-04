@@ -4,6 +4,7 @@ import crud.dao.UserDAO;
 import crud.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,9 +15,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDAO userDAO) {
+    public UserServiceImpl(UserDAO userDAO, PasswordEncoder passwordEncoder) {
         this.userDAO = userDAO;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -31,6 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDAO.addUser(user);
     }
 
@@ -41,6 +45,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void editUser(User user) {
+        User oldUser = getUser(user.getId());
+        if (user.getPassword().equals("")) {
+            user.setPassword(oldUser.getPassword());
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userDAO.editUser(user);
     }
 

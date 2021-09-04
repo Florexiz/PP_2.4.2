@@ -5,7 +5,7 @@
     <title>Edit User</title>
 </head>
 <body>
-    <form th:action="@{/admin/edit}" th:method="PATCH" th:object="${user}" style="text-align: center">
+    <form th:action="@{/admin/edit}" th:method="PUT" th:object="${user}" style="text-align: center">
         <label for="id">ID</label><br>
         <input type="text" id="id" th:field="*{id}" readonly><br><br>
 
@@ -20,6 +20,12 @@
 
         <label for="email">Email</label><br>
         <input type="email" id="email" th:field="*{email}"><br><br>
+
+        <label for="password">Password</label><br>
+        <input type="password" id="password" th:field="*{password}"><br><br>
+
+        <input type="checkbox" id="isAdmin" th:name="admin" th:checked="${admin}">
+        <label for="isAdmin">Admin</label><br><br>
 
         <input type="submit" value="Update">
     </form>

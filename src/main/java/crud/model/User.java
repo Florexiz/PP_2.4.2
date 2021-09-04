@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class User implements UserDetails {
@@ -25,20 +25,19 @@ public class User implements UserDetails {
     private String password;
 
     @ManyToMany
-    private Collection<Role> roles;
+    private Set<Role> roles;
 
     public User() {
 
     }
 
-    public User(String name, String surname, String city, String email, String password,  Role role) {
+    public User(String name, String surname, String city, String email, String password,  Set<Role> roles) {
         this.name = name;
         this.surname = surname;
         this.city = city;
         this.email = email;
         this.password = password;
-        this.roles = new HashSet<>();
-        roles.add(role);
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -81,8 +80,33 @@ public class User implements UserDetails {
         this.email = email;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void addRole(Role role) {
         roles.add(role);
+    }
+
+    public void removeRole(String roleName) {
+        roles.removeIf(role -> role.getName().equals(roleName));
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public boolean hasRole(String roleName) {
+        for (Role role : roles) {
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

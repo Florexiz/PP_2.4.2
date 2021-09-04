@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashSet;
 
 @Controller
 public class UserController {
@@ -18,26 +19,6 @@ public class UserController {
     public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        /*for (int i = 1; i <= 20; i++) {
-            userService.addUser(new User(
-                    "Name" + i,
-                    "Surname" + i,
-                    "City" + i,
-                    "email" + i + "@mail.com",
-                    "PASSWORD" + i,
-                    roleService.getOrCreateRole("ROLE_USER")
-            ));
-        }
-        User admin = new User(
-                "AName",
-                "ASurname",
-                "ACity",
-                "admin@mail.com",
-                "ADMIN",
-                roleService.getOrCreateRole("ROLE_ADMIN")
-        );
-        admin.addRole(roleService.getOrCreateRole("ROLE_USER"));
-        userService.addUser(admin);*/
     }
 
     @GetMapping("/")
@@ -59,12 +40,19 @@ public class UserController {
 
     @GetMapping("/admin/new")
     public String addUser(Model model) {
+        model.addAttribute("admin", false);
         model.addAttribute("user", new User());
         return "addUser";
     }
 
     @PostMapping("/admin/new")
-    public String saveUser(@ModelAttribute("user") User user) {
+    public String saveUser(@ModelAttribute("user") User user,
+                           @RequestParam(value = "admin", defaultValue = "false") boolean admin) {
+        user.setRoles(new HashSet<>());
+        user.addRole(roleService.getOrCreateRole("ROLE_USER"));
+        if (admin) {
+            user.addRole(roleService.getOrCreateRole("ROLE_ADMIN"));
+        }
         userService.addUser(user);
         return "redirect:/admin";
     }
@@ -77,12 +65,22 @@ public class UserController {
 
     @GetMapping("/admin/edit/{id}")
     public String editUser(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", userService.getUser(id));
+        User user = userService.getUser(id);
+        model.addAttribute("admin", user.hasRole("ROLE_ADMIN"));
+        model.addAttribute("user", user);
         return "editUser";
     }
-
-    @PatchMapping("/admin/edit")
-    public String patchUser(@ModelAttribute User user) {
+    @PutMapping("/admin/edit")
+    public String patchUser(@ModelAttribute User user,
+                            @RequestParam(value = "admin", defaultValue = "false") boolean admin) {
+        User oldUser = userService.getUser(user.getId());
+        user.setRoles(oldUser.getRoles());
+        if (!admin && user.hasRole("ROLE_ADMIN")) {
+            user.removeRole("ROLE_ADMIN");
+        }
+        if (admin && !user.hasRole("ROLE_ADMIN")) {
+            user.addRole(roleService.getOrCreateRole("ROLE_ADMIN"));
+        }
         userService.editUser(user);
         return "redirect:/admin";
     }

@@ -5,7 +5,7 @@
     <title>User list</title>
     <style>
         table, th, td {border: 1px solid black}
-        th, td {width: 20%}
+        th, td {width: 17%}
         table {width: 100%}
     </style>
 </head>
@@ -17,6 +17,7 @@
             <th>Surname</th>
             <th>City</th>
             <th>Email</th>
+            <th>Roles</th>
         </tr>
         <th:block th:each="user : ${users}">
             <tr>
@@ -25,6 +26,7 @@
                 <td th:text="${user.surname}"></td>
                 <td th:text="${user.city}"></td>
                 <td th:text="${user.email}"></td>
+                <td th:text="${user.getAuthorities()}"></td>
                 <td style="width: min-content">
                     <form th:method="GET" th:action="@{/admin/edit/{id}(id=${user.id})}">
                         <input type="submit" value="Edit">
